@@ -1,0 +1,13 @@
+package {{packageName}}
+
+import Foundation
+import RealmSwift
+
+{{#models}}
+class {{name}} (
+{{#propertyAndComma}}
+    {{#data}}{{#value}}{{{android}}}{{/value}}{{/data}}{{comma}}
+{{/propertyAndComma}}
+) : Object
+
+{{/models}}
