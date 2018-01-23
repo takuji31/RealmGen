@@ -6,6 +6,7 @@ import io.realm.*
 import io.realm.annotations.*
 
 {{#models}}
+@RealmClass
 open class {{name}} (
 {{#propertyAndComma}}
     {{#data}}{{primaryKeyAnnotation}}{{#value}}{{{android}}}{{/value}}{{/data}}{{comma}}
