@@ -5,9 +5,9 @@ import RealmSwift
 
 {{#models}}
 class {{name}} : Object {
-{{#propertyAndComma}}
-    {{#data}}{{#value}}{{{android}}}{{/value}}{{/data}}{{comma}}
-{{/propertyAndComma}}
+{{#properties}}
+    {{#value}}{{{ios}}}{{/value}}
+{{/properties}}
 }
 
 {{/models}}
