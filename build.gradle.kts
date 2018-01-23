@@ -19,6 +19,7 @@ buildscript {
 
 apply {
     plugin("kotlin")
+    plugin<MavenPlugin>()
 }
 
 val kotlinVersion: String by extra
