@@ -4,10 +4,10 @@ import Foundation
 import RealmSwift
 
 {{#models}}
-class {{name}} (
+class {{name}} : Object {
 {{#propertyAndComma}}
     {{#data}}{{#value}}{{{android}}}{{/value}}{{/data}}{{comma}}
 {{/propertyAndComma}}
-) : Object
+}
 
 {{/models}}
