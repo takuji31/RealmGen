@@ -1,0 +1,10 @@
+package {{packageName}}
+
+{{#models}}
+open class {{name}} (
+{{#propertyAndComma}}
+    {{#data}}{{#value}}{{{android}}}{{/value}}{{/data}}{{comma}}
+{{/propertyAndComma}}
+) : RealmObject()
+
+{{/models}}
