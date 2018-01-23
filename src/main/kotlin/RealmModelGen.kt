@@ -40,7 +40,7 @@ class Schema {
     fun writeTo(writer: Writer, language: Language) {
         val mf = DefaultMustacheFactory()
         val mustache = mf.compile(language.fileName)
-        mustache.execute(PrintWriter(System.out), this).flush()
+        mustache.execute(writer, this).flush()
 
     }
 }
