@@ -5,7 +5,7 @@ import io.realm.*
 {{#models}}
 open class {{name}} (
 {{#propertyAndComma}}
-    {{#data}}{{#value}}{{{android}}}{{/value}}{{/data}}{{comma}}
+    {{#data}}{{primaryKeyAnnotation}}{{#value}}{{{android}}}{{/value}}{{/data}}{{comma}}
 {{/propertyAndComma}}
 ) : RealmObject()
 

@@ -179,6 +179,12 @@ class LinkingObjects(
 class TypeProperty(val model: Model, override val name: String, val type: FieldType) : Property {
     var required = false
 
+    val isPrimaryKey: Boolean
+        get() = model.primaryKey == this
+
+    override val primaryKeyAnnotation: String?
+        get() = if (isPrimaryKey) "@PrimaryKey " else ""
+
     override fun value(): PlatformPair<String> {
         val optionalMarker = if (required) "" else "?"
         return when (type) {
@@ -206,6 +212,8 @@ class TypeProperty(val model: Model, override val name: String, val type: FieldT
 
 interface Property {
     val name: String
+    val primaryKeyAnnotation: String?
+        get() = ""
     fun value(): PlatformPair<String>
 }
 

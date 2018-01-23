@@ -8,6 +8,11 @@ class {{name}} : Object {
 {{#properties}}
     {{#value}}{{{ios}}}{{/value}}
 {{/properties}}
+{{#primaryKey}}
+    override static func primaryKey() -> String? {
+        return "{{name}}"
+    }
+{{/primaryKey}}
 }
 
 {{/models}}
