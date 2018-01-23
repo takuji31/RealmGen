@@ -146,7 +146,7 @@ class RelationList(val model: Model, override val name: String, val target: Mode
     override fun value(): PlatformPair<String> {
         return PlatformPair(
             ios = "let $name = List<${target.name}>()",
-            android = "val $name: RealmList<${target.name}> = RealmList<${target.name}>()"
+            android = "val $name: RealmList<${target.name}> = RealmList()"
         )
     }
 }
@@ -192,8 +192,8 @@ class TypeProperty(val model: Model, override val name: String, val type: FieldT
                 // Supports Nullable/Optional
                 val defaultValue = if (required) type.defaultValue else PlatformPair(ios = "nil", android = "null")
                 PlatformPair(
-                    ios = "@objc dynamic var $name: String$optionalMarker = ${defaultValue.ios}",
-                    android = "var $name: String$optionalMarker = ${defaultValue.android}"
+                    ios = "@objc dynamic var $name: ${type.typeName.ios}$optionalMarker = ${defaultValue.ios}",
+                    android = "var $name: ${type.typeName.android}$optionalMarker = ${defaultValue.android}"
                 )
             }
             FieldType.Int, FieldType.Long, FieldType.Bool, FieldType.Float, FieldType.Double -> {
