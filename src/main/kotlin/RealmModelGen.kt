@@ -3,7 +3,6 @@ package com.github.takuji31.realmgen
 import com.github.mustachejava.DefaultMustacheFactory
 import java.io.PrintWriter
 import java.io.Writer
-import kotlin.properties.Delegates
 
 data class PlatformPair<out T>(
     val ios: T,
@@ -32,8 +31,8 @@ class Schema {
     var models: List<Model> = listOf()
         private set
 
-    fun model(block: Model.() -> Unit): Model {
-        val model = Model(this)
+    fun model(name: String, block: Model.() -> Unit): Model {
+        val model = Model(this, name)
         models += model
         return model.apply(block)
     }
@@ -46,8 +45,7 @@ class Schema {
     }
 }
 
-class Model(val schema: Schema) {
-    var name: String by Delegates.notNull()
+class Model(val schema: Schema, val name: String) {
     var properties: List<Property> = listOf()
         private set
     val propertyAndComma: List<CommaPair<Property>>
@@ -59,46 +57,47 @@ class Model(val schema: Schema) {
 
     var primaryKey: Property? = null
 
-    fun string(block: TypeProperty.() -> Unit): TypeProperty {
-        return createAndAddProperty(FieldType.String, block)
+    fun string(name: String, block: TypeProperty.() -> Unit): TypeProperty {
+        return createAndAddProperty(name, FieldType.String, block)
     }
 
-    fun int(block: TypeProperty.() -> Unit): TypeProperty {
-        return createAndAddProperty(FieldType.Int, block)
+    fun int(name: String, block: TypeProperty.() -> Unit): TypeProperty {
+        return createAndAddProperty(name, FieldType.Int, block)
     }
 
-    fun long(block: TypeProperty.() -> Unit): TypeProperty {
-        return createAndAddProperty(FieldType.Long, block)
+    fun long(name: String, block: TypeProperty.() -> Unit): TypeProperty {
+        return createAndAddProperty(name, FieldType.Long, block)
     }
 
-    fun bool(block: TypeProperty.() -> Unit): TypeProperty {
-        return createAndAddProperty(FieldType.Bool, block)
+    fun bool(name: String, block: TypeProperty.() -> Unit): TypeProperty {
+        return createAndAddProperty(name, FieldType.Bool, block)
     }
 
-    fun float(block: TypeProperty.() -> Unit): TypeProperty {
-        return createAndAddProperty(FieldType.Float, block)
+    fun float(name: String, block: TypeProperty.() -> Unit): TypeProperty {
+        return createAndAddProperty(name, FieldType.Float, block)
     }
 
-    fun double(block: TypeProperty.() -> Unit): TypeProperty {
-        return createAndAddProperty(FieldType.Float, block)
+    fun double(name: String, block: TypeProperty.() -> Unit): TypeProperty {
+        return createAndAddProperty(name, FieldType.Float, block)
     }
 
-    fun date(block: TypeProperty.() -> Unit): TypeProperty {
-        return createAndAddProperty(FieldType.Date, block)
+    fun date(name: String, block: TypeProperty.() -> Unit): TypeProperty {
+        return createAndAddProperty(name, FieldType.Date, block)
     }
 
-    fun data(block: TypeProperty.() -> Unit): TypeProperty {
-        return createAndAddProperty(FieldType.Data, block)
+    fun data(name: String, block: TypeProperty.() -> Unit): TypeProperty {
+        return createAndAddProperty(name, FieldType.Data, block)
     }
 
-    private fun createAndAddProperty(fieldType: FieldType, block: TypeProperty.() -> Unit): TypeProperty {
-        val property = TypeProperty(this, fieldType)
+    private fun createAndAddProperty(name: String, fieldType: FieldType, block: TypeProperty.() -> Unit): TypeProperty {
+        val property = TypeProperty(this, name, fieldType)
         properties += property
         return property.apply(block)
     }
 
     fun obj(
-        name: String, target: Model,
+        name: String,
+        target: Model,
         createLinkingObjects: Boolean = false,
         linkingObjectsName: String? = null,
         linkingObjectsIsPrivate: Boolean = false
@@ -143,7 +142,7 @@ class Model(val schema: Schema) {
     }
 }
 
-class RelationList(val model: Model, override var name: String, val target: Model) : Property {
+class RelationList(val model: Model, override val name: String, val target: Model) : Property {
     override fun value(): PlatformPair<String> {
         return PlatformPair(
             ios = "let $name = List<${target.name}>()",
@@ -152,7 +151,7 @@ class RelationList(val model: Model, override var name: String, val target: Mode
     }
 }
 
-class RelationObject(val model: Model, override var name: String, val target: Model) : Property {
+class RelationObject(val model: Model, override val name: String, val target: Model) : Property {
     override fun value(): PlatformPair<String> {
         return PlatformPair(
             ios = "@objc dynamic var $name: ${model.name}?",
@@ -163,7 +162,7 @@ class RelationObject(val model: Model, override var name: String, val target: Mo
 
 class LinkingObjects(
     val model: Model,
-    override var name: String,
+    override val name: String,
     val target: Model,
     val property: Property,
     val isPrivate: Boolean = false
@@ -177,8 +176,7 @@ class LinkingObjects(
     }
 }
 
-class TypeProperty(val model: Model, val type: FieldType) : Property {
-    override var name: String by Delegates.notNull()
+class TypeProperty(val model: Model, override val name: String, val type: FieldType) : Property {
     var required = false
 
     override fun value(): PlatformPair<String> {
@@ -207,7 +205,7 @@ class TypeProperty(val model: Model, val type: FieldType) : Property {
 }
 
 interface Property {
-    var name: String
+    val name: String
     fun value(): PlatformPair<String>
 }
 
