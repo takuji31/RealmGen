@@ -146,7 +146,7 @@ class RelationList(val model: Model, override val name: String, val target: Mode
     override fun value(): PlatformPair<String> {
         return PlatformPair(
             ios = "let $name = List<${target.name}>()",
-            android = "val $name: RealmList<${target.name}> = RealmList()"
+            android = "var $name: RealmList<${target.name}> = RealmList()"
         )
     }
 }
