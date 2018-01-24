@@ -10,6 +10,7 @@ import io.realm.annotations.*
 open class {{name}} (
 {{#propertyAndComma}}
     {{#data}}{{primaryKeyAnnotation}}{{#value}}{{{android}}}{{/value}}{{/data}}{{comma}}
+
 {{/propertyAndComma}}
 ) : RealmObject()
 
