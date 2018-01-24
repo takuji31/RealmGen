@@ -154,8 +154,8 @@ class RelationList(val model: Model, override val name: String, val target: Mode
 class RelationObject(val model: Model, override val name: String, val target: Model) : Property {
     override fun value(): PlatformPair<String> {
         return PlatformPair(
-            ios = "@objc dynamic var $name: ${model.name}?",
-            android = "var $name: ${model.name}? = null"
+            ios = "@objc dynamic var $name: ${target.name}?",
+            android = "var $name: ${target.name}? = null"
         )
     }
 }
