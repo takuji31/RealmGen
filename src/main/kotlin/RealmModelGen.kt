@@ -197,14 +197,17 @@ class TypeProperty(val model: Model, override val name: String, val type: FieldT
                 )
             }
             FieldType.Int, FieldType.Long, FieldType.Bool, FieldType.Float, FieldType.Double -> {
-                val defaultValue = if (required) type.defaultValue else PlatformPair(
-                    ios = "RealmOptional<${type.typeName.ios}>()",
-                    android = "null"
-                )
-                PlatformPair(
-                    ios = "let $name = ${defaultValue.ios}",
-                    android = "var $name: ${type.typeName.android}$optionalMarker = ${defaultValue.android}"
-                )
+                if (required) {
+                    PlatformPair(
+                        ios = "@objc dynamic var $name: ${type.typeName.ios} = ${type.defaultValue}",
+                        android = "var $name: ${type.typeName.android} = ${type.defaultValue}"
+                    )
+                } else {
+                    PlatformPair(
+                        ios = "let $name = RealmOptional<${type.typeName.ios}>()",
+                        android = "var $name: ${type.typeName.android}? = null"
+                    )
+                }
             }
         }
     }
