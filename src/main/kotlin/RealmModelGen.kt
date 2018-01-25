@@ -199,8 +199,8 @@ class TypeProperty(val model: Model, override val name: String, val type: FieldT
             FieldType.Int, FieldType.Long, FieldType.Bool, FieldType.Float, FieldType.Double -> {
                 if (required) {
                     PlatformPair(
-                        ios = "@objc dynamic var $name: ${type.typeName.ios} = ${type.defaultValue}",
-                        android = "var $name: ${type.typeName.android} = ${type.defaultValue}"
+                        ios = "@objc dynamic var $name: ${type.typeName.ios} = ${type.defaultValue.ios}",
+                        android = "var $name: ${type.typeName.android} = ${type.defaultValue.android}"
                     )
                 } else {
                     PlatformPair(
