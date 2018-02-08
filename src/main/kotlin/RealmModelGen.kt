@@ -1,7 +1,5 @@
 package com.github.takuji31.realmgen
 
-import com.github.mustachejava.DefaultMustacheFactory
-import java.io.PrintWriter
 import java.io.Writer
 
 data class PlatformPair<out T>(
@@ -38,7 +36,7 @@ class Schema {
     }
 
     fun writeTo(writer: Writer, language: Language) {
-        val mf = DefaultMustacheFactory()
+        val mf = CodeGenMustacheFactory()
         val mustache = mf.compile(language.fileName)
         mustache.execute(writer, this).flush()
 
@@ -56,6 +54,15 @@ class Model(val schema: Schema, val name: String) {
         }
 
     var primaryKey: Property? = null
+
+    private val indexedProperties: List<Property>
+        get() = properties.filter { it.indexed }
+
+    val hasIndexedProperties: Boolean
+        get() = indexedProperties.isNotEmpty()
+
+    val indexedPropertiesString: String
+        get() = indexedProperties.joinToString(separator = ", ", transform = { "\"" + it.name + "\"" })
 
     fun string(name: String, block: TypeProperty.() -> Unit): TypeProperty {
         return createAndAddProperty(name, FieldType.String, block)
@@ -178,6 +185,7 @@ class LinkingObjects(
 
 class TypeProperty(val model: Model, override val name: String, val type: FieldType) : Property {
     var required = false
+    override var indexed = false
 
     val isPrimaryKey: Boolean
         get() = model.primaryKey == this
@@ -217,6 +225,8 @@ interface Property {
     val name: String
     val primaryKeyAnnotation: String?
         get() = ""
+    val indexed: Boolean
+        get() = false
     fun value(): PlatformPair<String>
 }
 
