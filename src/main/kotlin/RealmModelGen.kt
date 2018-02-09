@@ -62,7 +62,7 @@ class Model(val schema: Schema, val name: String) {
         get() = indexedProperties.isNotEmpty()
 
     val indexedPropertiesString: String
-        get() = indexedProperties.joinToString(separator = ", ", transform = { "\"" + it.name + "\"" })
+        get() = indexedProperties.joinToString(separator = ", ", transform = { "\"${it.name}\"" })
 
     fun string(name: String, block: TypeProperty.() -> Unit): TypeProperty {
         return createAndAddProperty(name, FieldType.String, block)
