@@ -6,12 +6,18 @@ class {{name}} : Object {
 {{#properties}}
     {{#value}}{{{ios}}}{{/value}}
 {{/properties}}
-
 {{#primaryKey}}
+
     override static func primaryKey() -> String? {
         return "{{name}}"
     }
 {{/primaryKey}}
+{{#hasIndexedProperties}}
+
+    override static func indexedProperties() -> [String] {
+        return [{{indexedPropertiesString}}]
+    }
+{{/hasIndexedProperties}}
 }
 
 {{/models}}
