@@ -4,6 +4,14 @@ import java.util.Date
 
 import io.realm.*
 import io.realm.annotations.*
+{{#moduleName}}
+@RealmModule(classes = [
+{{#models}}
+    {{name}}::class,
+{{/models}}
+])
+class {{moduleName}}
+{{/moduleName}}
 
 {{#models}}
 @RealmClass

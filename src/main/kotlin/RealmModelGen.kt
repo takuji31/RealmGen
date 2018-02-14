@@ -28,6 +28,7 @@ class Schema {
     var packageName: String = ""
     var models: List<Model> = listOf()
         private set
+    var moduleName: String? = null
 
     fun model(name: String, block: Model.() -> Unit): Model {
         val model = Model(this, name)
