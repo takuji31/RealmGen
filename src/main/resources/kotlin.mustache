@@ -6,9 +6,9 @@ import io.realm.*
 import io.realm.annotations.*
 {{#moduleName}}
 @RealmModule(classes = [
-{{#models}}
-    {{name}}::class,
-{{/models}}
+{{#modelAndCommas}}
+    {{#data}}{{name}}{{/data}}::class{{comma}}
+{{/modelAndCommas}}
 ])
 class {{moduleName}}
 {{/moduleName}}

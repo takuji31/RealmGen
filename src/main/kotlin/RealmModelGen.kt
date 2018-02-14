@@ -30,6 +30,13 @@ class Schema {
         private set
     var moduleName: String? = null
 
+    val modelAndCommas: List<CommaPair<Model>>
+        get() {
+            return models.mapIndexed { index, model ->
+                CommaPair(model, if (models.lastIndex != index) "," else null)
+            }
+        }
+
     fun model(name: String, block: Model.() -> Unit): Model {
         val model = Model(this, name)
         models += model
