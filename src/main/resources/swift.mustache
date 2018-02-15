@@ -1,6 +1,16 @@
 import Foundation
 import RealmSwift
 
+{{#moduleName}}
+struct {{moduleName}} {
+    static let objectTypes: [Object.Type] = [
+    {{#modelAndCommas}}
+        {{#data}}{{name}}{{/data}}.self{{comma}}
+    {{/modelAndCommas}}
+    ]
+}
+{{/moduleName}}
+
 {{#models}}
 class {{name}} : Object {
 {{#properties}}
