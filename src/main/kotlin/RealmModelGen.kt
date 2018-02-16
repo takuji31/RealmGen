@@ -61,7 +61,7 @@ class Model(val schema: Schema, val name: String) {
             }
         }
 
-    val initilizerPropertyAndCommas: List<CommaPair<Property>>
+    val initializerPropertyAndCommas: List<CommaPair<Property>>
         get() {
             return properties
                 .filter { !it.isLinkingObjects }
