@@ -158,6 +158,11 @@ class Model(val schema: Schema, val name: String) {
 }
 
 class RelationList(val model: Model, override val name: String, val target: Model) : Property {
+    override val isRelation: Boolean
+        get() = true
+    override val isListRelation: Boolean
+        get() = true
+
     override fun value(): PlatformPair<String> {
         return PlatformPair(
             ios = "let $name = List<${target.name}>()",
@@ -167,6 +172,9 @@ class RelationList(val model: Model, override val name: String, val target: Mode
 }
 
 class RelationObject(val model: Model, override val name: String, val target: Model) : Property {
+    override val isRelation: Boolean
+        get() = true
+
     override fun value(): PlatformPair<String> {
         return PlatformPair(
             ios = "@objc dynamic var $name: ${target.name}?",
@@ -182,6 +190,9 @@ class LinkingObjects(
     val property: Property,
     val isPrivate: Boolean = false
 ) : Property {
+    override val isLinkingObjects: Boolean
+        get() = true
+
     override fun value(): PlatformPair<String> {
         val privateModifier = if (isPrivate) "private " else ""
         return PlatformPair(
@@ -236,6 +247,12 @@ interface Property {
     val indexed: Boolean
         get() = false
     fun value(): PlatformPair<String>
+    val isListRelation: Boolean
+        get() = false
+    val isRelation: Boolean
+        get() = false
+    val isLinkingObjects: Boolean
+        get() = false
 }
 
 
