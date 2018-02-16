@@ -1,6 +1,25 @@
 import Foundation
 import RealmSwift
 
+protocol RealmIdentifiable {
+    static var identifierKey: String { get }
+}
+
+extension RealmIdentifiable where Self: RealmSwift.Object {
+    static func create(identifier: String, setup: ((Self) -> Void)? = nil) -> Self {
+        let instance = Self()
+        instance.setValue(identifier, forKey: Self.identifierKey)
+        setup?(instance)
+        return instance
+    }
+}
+
+extension Realm {
+    func find<T: RealmSwift.Object & RealmIdentifiable>(_ type: T.Type, identifier: String) -> Results<T> {
+        return objects(type).filter("%K == %@", T.identifierKey, identifier)
+    }
+}
+
 {{#moduleName}}
 struct {{moduleName}} {
     static let objectTypes: [Object.Type] = [
@@ -12,11 +31,13 @@ struct {{moduleName}} {
 {{/moduleName}}
 
 {{#models}}
-class {{name}} : Object {
+class {{name}}: Object{{#primaryKey}}, RealmIdentifiable{{/primaryKey}} {
 {{#properties}}
     {{#value}}{{{ios}}}{{/value}}
 {{/properties}}
 {{#primaryKey}}
+
+    static var identifierKey: String { return "{{name}}" }
 
     override static func primaryKey() -> String? {
         return "{{name}}"
