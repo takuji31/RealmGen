@@ -61,6 +61,15 @@ class Model(val schema: Schema, val name: String) {
             }
         }
 
+    val initilizerPropertiesAndComma: List<CommaPair<Property>>
+        get() {
+            return properties
+                .filter { !it.isLinkingObjects }
+                .mapIndexed { index, property ->
+                    CommaPair(property, if (properties.lastIndex != index) "," else null)
+                }
+        }
+
     var primaryKey: Property? = null
 
     private val indexedProperties: List<Property>
@@ -246,6 +255,7 @@ interface Property {
         get() = ""
     val indexed: Boolean
         get() = false
+
     fun value(): PlatformPair<String>
     val isListRelation: Boolean
         get() = false
