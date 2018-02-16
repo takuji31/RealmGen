@@ -8,7 +8,7 @@ data class PlatformPair<out T>(
 )
 
 enum class Language(val fileName: String) {
-    Swift("swift.mustache"), Kotlin("kotlin.mustache")
+    Swift("default_swift.mustache"), Kotlin("default_kotlin.mustache")
 }
 
 enum class FieldType(val typeName: PlatformPair<kotlin.String>, val defaultValue: PlatformPair<kotlin.String>) {
@@ -43,9 +43,9 @@ class Schema {
         return model.apply(block)
     }
 
-    fun writeTo(writer: Writer, language: Language) {
+    fun writeTo(writer: Writer, language: Language, fileName: String? = null) {
         val mf = CodeGenMustacheFactory()
-        val mustache = mf.compile(language.fileName)
+        val mustache = mf.compile(fileName ?: language.fileName)
         mustache.execute(writer, this).flush()
 
     }
