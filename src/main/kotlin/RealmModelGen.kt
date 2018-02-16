@@ -66,8 +66,10 @@ class Model(val schema: Schema, val name: String) {
         get() {
             return properties
                 .filter { !it.isLinkingObjects }
-                .mapIndexed { index, property ->
-                    CommaPair(property, if (properties.lastIndex != index) "," else null)
+                .run {
+                    mapIndexed { index, property ->
+                        CommaPair(property, if (lastIndex != index) "," else null)
+                    }
                 }
         }
 
