@@ -1,6 +1,7 @@
 package com.github.takuji31.realmgen
 
 import java.io.Writer
+import java.util.function.Function
 
 data class PlatformPair<out T>(
     val ios: T,
@@ -43,10 +44,10 @@ class Schema {
         return model.apply(block)
     }
 
-    fun writeTo(writer: Writer, language: Language, fileName: String? = null) {
+    fun writeTo(writer: Writer, language: Language, fileName: String? = null, customFunctions: Map<String, Function<String, String>> = emptyMap()) {
         val mf = CodeGenMustacheFactory()
         val mustache = mf.compile(fileName ?: language.fileName)
-        mustache.execute(writer, this).flush()
+        mustache.execute(writer, arrayOf(this, customFunctions)).flush()
 
     }
 }
