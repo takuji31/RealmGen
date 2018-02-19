@@ -44,9 +44,9 @@ class Schema {
         return model.apply(block)
     }
 
-    fun writeTo(writer: Writer, language: Language, fileName: String? = null, customFunctions: Map<String, Function<String, String>> = emptyMap()) {
+    fun writeTo(writer: Writer, language: Language, templateName: String? = null, customFunctions: Map<String, Function<String, String>> = emptyMap()) {
         val mf = CodeGenMustacheFactory()
-        val mustache = mf.compile(fileName ?: language.fileName)
+        val mustache = mf.compile(templateName ?: language.fileName)
         mustache.execute(writer, arrayOf(this, customFunctions)).flush()
 
     }
