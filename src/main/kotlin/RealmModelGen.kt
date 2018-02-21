@@ -1,5 +1,6 @@
 package com.github.takuji31.realmgen
 
+import com.github.mustachejava.DefaultMustacheFactory
 import java.io.Writer
 import java.util.function.Function
 
@@ -45,7 +46,7 @@ class Schema {
     }
 
     fun writeTo(writer: Writer, language: Language, templateName: String? = null, customFunctions: Map<String, Function<String, String>> = emptyMap()) {
-        val mf = CodeGenMustacheFactory()
+        val mf = DefaultMustacheFactory()
         val mustache = mf.compile(templateName ?: language.fileName)
         mustache.execute(writer, arrayOf(this, customFunctions)).flush()
 
