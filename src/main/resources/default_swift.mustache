@@ -25,7 +25,7 @@ class {{name}}: Object {
 {{#hasIndexedProperties}}
 
     override static func indexedProperties() -> [String] {
-        return [{{indexedPropertiesString}}]
+        return [{{{indexedPropertiesString}}}]
     }
 {{/hasIndexedProperties}}
 }
