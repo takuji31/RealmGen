@@ -57,12 +57,15 @@ class Schema {
         language: Language,
         templateName: String? = null,
         customFunctions: Map<String, Function<String, String>> = emptyMap(),
-        append: Boolean = false
+        needsFlush: Boolean = true
     ) {
         val mf = DefaultMustacheFactory()
         val mustache = mf.compile(templateName ?: language.fileName)
-        mustache.execute(writer, arrayOf(this, customFunctions)).flush()
-
+        mustache.execute(writer, arrayOf(this, customFunctions)).run {
+            if (needsFlush) {
+                flush()
+            }
+        }
     }
 }
 
@@ -301,13 +304,20 @@ fun List<Schema>.writeTo(
     forEachIndexed { index, schema ->
         if (index == 0 && writeHeader) {
             schema.writeTo(
-                writer,
-                language,
-                headerTemplateName ?: language.headerTemplateName,
+                writer = writer,
+                language = language,
+                templateName = headerTemplateName ?: language.headerTemplateName,
                 customFunctions = customFunctions,
-                append = false
+                needsFlush = false
             )
         }
-        schema.writeTo(writer, language, templateName ?: language.fileName, customFunctions, !writeHeader && index == 0)
+        schema.writeTo(
+            writer = writer,
+            language = language,
+            templateName = templateName ?: language.fileName,
+            customFunctions = customFunctions,
+            needsFlush = false
+        )
+        writer.flush()
     }
 }
