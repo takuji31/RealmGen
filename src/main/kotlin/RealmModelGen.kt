@@ -9,8 +9,15 @@ data class PlatformPair<out T>(
     val android: T = ios
 )
 
-enum class Language(val fileName: String) {
-    Swift("default_swift.mustache"), Kotlin("default_kotlin.mustache")
+enum class Language(val fileName: String, val headerTemplateName: String) {
+    Swift(
+        "default_swift.mustache",
+        "default_header_swift.mustache"
+    ),
+    Kotlin(
+        "default_kotlin.mustache",
+        "default_header_swift.mustache"
+    )
 }
 
 enum class FieldType(val typeName: PlatformPair<kotlin.String>, val defaultValue: PlatformPair<kotlin.String>) {
@@ -45,7 +52,13 @@ class Schema {
         return model.apply(block)
     }
 
-    fun writeTo(writer: Writer, language: Language, templateName: String? = null, customFunctions: Map<String, Function<String, String>> = emptyMap()) {
+    fun writeTo(
+        writer: Writer,
+        language: Language,
+        templateName: String? = null,
+        customFunctions: Map<String, Function<String, String>> = emptyMap(),
+        append: Boolean = false
+    ) {
         val mf = DefaultMustacheFactory()
         val mustache = mf.compile(templateName ?: language.fileName)
         mustache.execute(writer, arrayOf(this, customFunctions)).flush()
@@ -272,4 +285,29 @@ interface Property {
 
 fun realmSchema(block: Schema.() -> Unit): Schema {
     return Schema().apply(block)
+}
+
+fun List<Schema>.writeTo(
+    writer: Writer,
+    language: Language,
+    headerTemplateName: String? = null,
+    templateName: String? = null,
+    customFunctions: Map<String, Function<String, String>> = emptyMap(),
+    writeHeader: Boolean = true
+) {
+    if (!map { it.packageName }.all { it == "" || it == first().packageName }) {
+        System.err.println("Package name is ignored beyond second schemas. Please set blank string or same name.")
+    }
+    forEachIndexed { index, schema ->
+        if (index == 0 && writeHeader) {
+            schema.writeTo(
+                writer,
+                language,
+                headerTemplateName ?: language.headerTemplateName,
+                customFunctions = customFunctions,
+                append = false
+            )
+        }
+        schema.writeTo(writer, language, templateName ?: language.fileName, customFunctions, !writeHeader && index == 0)
+    }
 }
