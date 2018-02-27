@@ -16,7 +16,7 @@ enum class Language(val fileName: String, val headerTemplateName: String) {
     ),
     Kotlin(
         "default_kotlin.mustache",
-        "default_header_swift.mustache"
+        "default_header_kotlin.mustache"
     )
 }
 
